@@ -24,7 +24,12 @@ interp1D(std::vector<T> const &v,
          double const &        keyVal,
          CompOper const &      comp = std::less<double>{})
 {
-  return 0.0;
+  return interp1D(v.cbegin(),
+                  v.cend(),
+                  keyVal,
+                  [](auto x){return x[0];},//extractKey
+                  [](auto x){return x[1];},//extractValue
+                  comp);
 }
 
 
@@ -47,7 +52,18 @@ interp1D(std::vector<double> const &keys,
          double const &             keyVal,
          CompOper const &           comp = std::less<double>{})
 {
-  return T{};
+  std::vector<size_t> indices(keys.size());
+  std::iota(indices.begin(), indices.end(), 0.0);
+  //equivalent to
+  // indices[0] = 0.0
+  // for(size_t = 1; i <indices.size(); ++i)
+ //    indices[i] = indices[i-1] + 1;
+  return interp1D(indices.cbegin(),
+                  indices.cend(),
+                  keyVal,
+                  [keys](auto i){return keys[i];},
+                  [values](auto i){return values[i];},
+                  comp);
 }
 
 #endif /* EXAMPLES_SRC_INTERP1D_INTERP1D_UTIL_HPP_ */

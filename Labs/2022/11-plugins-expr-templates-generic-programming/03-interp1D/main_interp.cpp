@@ -7,6 +7,7 @@
 int
 main()
 {
+
   const std::vector<std::array<double, 2>> v = {{0.1, 2.0},
                                                 {0.3, 3.0},
                                                 {0.5, 5.0},
@@ -41,6 +42,7 @@ main()
       const double xin = interp1D(vr, key, std::greater<double>());
       std::cout << "Value at " << key << " equal to " << xin << std::endl;
     }
+
 
   // Now the version that takes two vectors separately for keys
   // (nodes) and values

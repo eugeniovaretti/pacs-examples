@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 
+// We want an automatic way to convert result = x + x + y * y (that generates temporaries object) in the for loop (which is much more optimal)
+
 template <typename T, typename Container = std::vector<T>>
 class MyVector
 {
@@ -67,6 +69,78 @@ public:
 private:
   Container cont;
 };
+
+// A binary operator for a + b (a,b can be different type a-Op1; b-Op2)
+template<class T, class Op1, class Op2>
+class MyVectorAdd
+{
+public:
+  MyVectorAdd(const Op1 &a_, const Op2 &b_)
+      :a(a_), b(b_)
+  {
+    assert(a.size() == b.size());
+  }
+
+  T
+  operator[](const size_t &i)
+  {
+    return a[i]+b[i];
+  }
+
+  size_t
+  size()
+  {
+    return a.size();
+  }
+
+
+private:
+  const Op1 &a;
+  const Op2 &b;
+
+}
+
+template<class T, class Op1, class Op2>
+class MyVectorMul
+{
+public:
+  MyVectorAdd(const Op1 &a_, const Op2 &b_)
+      :a(a_), b(b_)
+  {
+    assert(a.size() == b.size());
+  }
+
+  T
+  operator[](const size_t &i)
+  {
+    return a[i]*b[i];
+  }
+
+  size_t
+  size()
+  {
+    return a.size();
+  }
+
+
+private:
+  const Op1 &a;
+  const Op2 &b;
+
+}
+
+
+template<class T, class V1, class V2>
+MyVector<T, MyVectorAdd<T,V1,V2>>
+operator+(const MyVector<T, V1> &a, const MyVector<T,V2> &b)
+{
+  return MyVector<T, MyVectorAdd<T,V1,V2>>(MyVectorAdd<T,V1,V2>(a.data(), b.data()));
+}
+
+operator*(MyVector<> a, MyVector<> b)
+{
+
+}
 
 // A program that evaluates (x + x + y * y).
 int
